@@ -1,0 +1,38 @@
+name: Deploy to AWS EC2
+
+on:
+  push:
+    branches:
+      - main  # 當 main 分支有變更時觸發
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Deploy to AWS EC2 via SSH
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.AWS_EC2_HOST }}
+          username: ${{ secrets.AWS_EC2_USERNAME }}
+          key: ${{ secrets.AWS_EC2_SSH_KEY }}
+          script: |
+            # 檢查目錄是否已存在
+            if [ -d "n8n" ]; then
+              echo "目錄已存在，更新代碼..."
+              cd n8n
+              git pull origin main
+            else
+              echo "克隆代碼庫..."
+              git clone https://github.com/lllloo/n8n.git
+              cd n8n
+            fi
+            
+            # 在正確的目錄中執行 docker-compose 命令
+            echo "重啟 Docker 容器..."
+            docker-compose down
+            docker-compose build
+            docker-compose up -d

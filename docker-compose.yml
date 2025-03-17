@@ -1,0 +1,20 @@
+# 定義持久化數據的卷
+volumes:
+  n8n_data:
+
+services:
+  # n8n 服務配置
+  n8n:
+    # 使用官方 n8n 映像
+    image: docker.n8n.io/n8nio/n8n
+    # 設置自動重啟策略
+    restart: always
+    # 暴露本地端口 5678，映射到容器內的 5678
+    ports:
+      - 5678:5678
+    # 環境變數配置
+    # environment:
+    # - WEBHOOK_URL=${WEBHOOK_URL} # Webhook 的 URL，需在 .env 文件中配置
+    # 掛載卷以持久化數據
+    volumes:
+      - n8n_data:/home/node/.n8n
