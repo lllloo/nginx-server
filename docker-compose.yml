@@ -11,7 +11,7 @@ services:
     restart: always
     # 暴露本地端口 5678，映射到容器內的 5678
     ports:
-      - 80:5678
+      - 443:5678
     # 環境變數配置
     # environment:
     # - WEBHOOK_URL=${WEBHOOK_URL} # Webhook 的 URL，需在 .env 文件中配置
