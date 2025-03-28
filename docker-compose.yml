@@ -9,13 +9,31 @@ services:
     image: docker.n8n.io/n8nio/n8n
     # 設置自動重啟策略
     restart: always
-    # 暴露本地端口 80 和 443，映射到容器內的 5678
+    # 不再直接暴露到主機的 80 和 443 端口
     ports:
-      - 80:5678
-      - 443:5678
+      - 5678:5678
     # 環境變數配置
     # environment:
-    # - WEBHOOK_URL=${WEBHOOK_URL} # Webhook 的 URL，需在 .env 文件中配置
+      # - WEBHOOK_URL=${WEBHOOK_URL} # Webhook 的 URL，需在 .env 文件中配置
     # 掛載卷以持久化數據
     volumes:
       - n8n_data:/home/node/.n8n
+
+  nginx:
+    image: nginx:latest
+    ports:
+      - 80:80
+      - 443:443
+    restart: always
+    volumes:
+      - ./nginx/conf.d:/etc/nginx/conf.d
+      - ./certbot/www:/var/www/certbot
+      - ./certbot/conf:/etc/nginx/ssl
+    depends_on:
+      - n8n
+    
+  certbot:
+    image: certbot/certbot:latest
+    volumes:
+      - ./certbot/www:/var/www/certbot
+      - ./certbot/conf:/etc/letsencrypt
