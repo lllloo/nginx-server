@@ -7,7 +7,7 @@ services:
     # 使用官方 n8n 映像
     image: docker.n8n.io/n8nio/n8n
     # 設置自動重啟策略
-    restart: always
+    restart: unless-stopped
     container_name: n8n
     # 暴露本地端口 5678，映射到容器內的 5678
     ports:
@@ -32,15 +32,15 @@ services:
     depends_on:
       - n8n
       - helloworld
-  # certbot:
-  #   image: certbot/certbot:latest
-  #   container_name: certbot
-  #   volumes: 
-  #     - ./certbot/conf:/etc/letsencrypt
-  #     - ./certbot/www:/var/www/certbot
-  #   # command: certonly --webroot -w /var/www/certbot --force-renewal  --email asdf01618@gmail.com -d bugloop.com -d n8n.bugloop.com --agree-tos
-  #   command: certonly --webroot -w /var/www/certbot --keep-until-expiring  --email asdf01618@gmail.com -d bugloop.com -d n8n.bugloop.com --agree-tos
+  certbot:
+    image: certbot/certbot:latest
+    container_name: certbot
+    volumes: 
+      - ./certbot/conf:/etc/letsencrypt
+      - ./certbot/www:/var/www/certbot
+    # command: certonly --webroot -w /var/www/certbot --force-renewal  --email asdf01618@gmail.com -d bugloop.com -d n8n.bugloop.com --agree-tos
+    command: certonly --webroot -w /var/www/certbot --keep-until-expiring  --email asdf01618@gmail.com -d bugloop.com -d n8n.bugloop.com --agree-tos
 
 volumes:
   n8n_data:
-    name: n8n_n8n_data
+    name: n8n_data
