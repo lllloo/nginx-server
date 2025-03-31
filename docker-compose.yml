@@ -13,8 +13,8 @@ services:
     ports:
       - 5678:5678
     # 環境變數配置
-    # environment:
-    # - WEBHOOK_URL=${WEBHOOK_URL} # Webhook 的 URL，需在 .env 文件中配置
+    environment:
+    - WEBHOOK_URL=n8n.bugloop.com
     # 掛載卷以持久化數據
     volumes:
       - n8n_data:/home/node/.n8n
@@ -32,15 +32,15 @@ services:
     depends_on:
       - n8n
       - helloworld
-  certbot:
-    image: certbot/certbot:latest
-    container_name: certbot
-    volumes: 
-      - ./certbot/conf:/etc/letsencrypt
-      - ./certbot/www:/var/www/certbot
-    # command: certonly --webroot -w /var/www/certbot --force-renewal  --email asdf01618@gmail.com -d bugloop.com -d n8n.bugloop.com --agree-tos
-    command: certonly --webroot -w /var/www/certbot --keep-until-expiring  --email asdf01618@gmail.com -d bugloop.com -d n8n.bugloop.com --agree-tos
+  # certbot:
+  #   image: certbot/certbot:latest
+  #   container_name: certbot
+  #   volumes: 
+  #     - ./certbot/conf:/etc/letsencrypt
+  #     - ./certbot/www:/var/www/certbot
+  #   # command: certonly --webroot -w /var/www/certbot --force-renewal  --email asdf01618@gmail.com -d bugloop.com -d n8n.bugloop.com --agree-tos
+  #   command: certonly --webroot -w /var/www/certbot --keep-until-expiring  --email asdf01618@gmail.com -d bugloop.com -d n8n.bugloop.com --agree-tos
 
 volumes:
   n8n_data:
-    name: n8n_data
+    name: n8n_n8n_data
