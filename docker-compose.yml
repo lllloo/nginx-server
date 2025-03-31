@@ -14,7 +14,7 @@ services:
       - 5678:5678
     # 環境變數配置
     environment:
-    - WEBHOOK_URL=n8n.bugloop.com
+    - WEBHOOK_URL=https://n8n.bugloop.com
     # 掛載卷以持久化數據
     volumes:
       - n8n_data:/home/node/.n8n
