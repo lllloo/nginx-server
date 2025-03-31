@@ -38,6 +38,7 @@ services:
     volumes: 
       - ./certbot/conf:/etc/letsencrypt
       - ./certbot/www:/var/www/certbot
+    # command: certonly --webroot -w /var/www/certbot --force-renewal  --email asdf01618@gmail.com -d bugloop.com -d n8n.bugloop.com --agree-tos
     command: certonly --webroot -w /var/www/certbot --keep-until-expiring  --email asdf01618@gmail.com -d bugloop.com -d n8n.bugloop.com --agree-tos
 
 volumes:
