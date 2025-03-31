@@ -2,11 +2,13 @@ services:
   helloworld:
     image: crccheck/hello-world
     restart: unless-stopped
+    container_name: helloworld
   n8n:
     # 使用官方 n8n 映像
     image: docker.n8n.io/n8nio/n8n
     # 設置自動重啟策略
     restart: always
+    container_name: n8n
     # 暴露本地端口 5678，映射到容器內的 5678
     ports:
       - 5678:5678
@@ -18,6 +20,7 @@ services:
       - n8n_data:/home/node/.n8n
   nginx:
     image: nginx:latest
+    container_name: nginx
     restart: unless-stopped
     ports:
       - 80:80
