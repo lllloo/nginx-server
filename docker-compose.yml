@@ -15,6 +15,7 @@ services:
     # 環境變數配置
     environment:
     - WEBHOOK_URL=https://n8n.bugloop.com
+    - GENERIC_TIMEZONE=Asia/Taipei
     # 掛載卷以持久化數據
     volumes:
       - n8n_data:/home/node/.n8n
