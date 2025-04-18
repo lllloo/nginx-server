@@ -25,18 +25,20 @@ app.get('/trending', async (req, res) => {
     // 設定頁面視窗大小
     await page.setViewport({ width: 1280, height: 800 })
 
-    // 前往目標網站 (此處以 Google 為例)
+    // 前往目標網站
     await page.goto(url, {
       waitUntil: 'networkidle2',
     })
-    // 取得頁面標題
-    const content = await page.content()
+    // 取得table
+    const table = await page.$('table')
+    const tableHtml = await page.evaluate(table => table.outerHTML, table)
+
     // 關閉瀏覽器
     await browser.close()
     // 回傳結果
     res.json({
       status: 'success',
-      content,
+      content: tableHtml,
     })
   } catch (error) {
     res.status(500).json({
