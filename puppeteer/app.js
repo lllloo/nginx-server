@@ -4,8 +4,6 @@ const puppeteer = require('puppeteer')
 const app = express()
 const port = process.env.PORT || 3000
 
-
-
 app.get('/trending', async (req, res) => {
   try {
     const url = 'https://trends.google.com.tw/trending?geo=TW&hl=zh-TW&hours=4'
@@ -30,8 +28,13 @@ app.get('/trending', async (req, res) => {
       waitUntil: 'networkidle2',
     })
     // 取得table
-    const table = await page.$('table')
-    const tableHtml = await page.evaluate(table => table.outerHTML, table)
+    const table = await page.$('table tbody:last-of-type tr td:nth-child(2)')
+    let tableHtml = await page.evaluate((table) => table.outerHTML, table)
+
+    // 所有的 html 結構只保留結構，移除所有的屬性
+    tableHtml = tableHtml.replace(/<[^>]+>/g, (match) => {
+      return match.replace(/ [^=]+="[^"]*"/g, '')
+    })
 
     // 關閉瀏覽器
     await browser.close()
