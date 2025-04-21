@@ -28,20 +28,33 @@ app.get('/trending', async (req, res) => {
       waitUntil: 'networkidle2',
     })
     // 取得table
-    const table = await page.$('table tbody:last-of-type tr td:nth-child(2)')
-    let tableHtml = await page.evaluate((table) => table.outerHTML, table)
+    const table = await page.$$eval(
+      'table tbody:last-of-type tr td:nth-child(2)',
+      (tds) => {
+        return tds.map((option) => `<div>${option.innerHTML}</div>`)
+      },
+    )
 
-    // 所有的 html 結構只保留結構，移除所有的屬性
-    tableHtml = tableHtml.replace(/<[^>]+>/g, (match) => {
-      return match.replace(/ [^=]+="[^"]*"/g, '')
-    })
+    const tableList = table
+      .map((item) => {
+        // 移除 div 上面的所有屬性 移除 <i> 標籤
+        return item.replace(/<div.*?>/g, '<div>').replace(/<i.*?>.*?<\/i>/g, '')
+      })
+      .map((item) => {
+        const tableDOM = parseDivHtml(item)
+        return {
+          name: tableDOM[0],
+          number: tableDOM[1][0][0],
+          time: `${tableDOM[1][2][1]}(${tableDOM[1][1]})`,
+        }
+      })
 
     // 關閉瀏覽器
     await browser.close()
     // 回傳結果
     res.json({
       status: 'success',
-      content: tableHtml,
+      content: tableList,
     })
   } catch (error) {
     res.status(500).json({
@@ -58,3 +71,34 @@ app.get('/', (req, res) => {
 app.listen(port, () => {
   console.log(`伺服器已啟動，監聽 port 號 ${port}`)
 })
+
+function parseDivHtml(html) {
+  const regex = /<\/?div>/g
+  let lastIndex = 0
+  let match
+  const root = []
+  const stack = [root]
+
+  while ((match = regex.exec(html)) !== null) {
+    const isClosing = match[0] === '</div>'
+    const text = html.slice(lastIndex, match.index).trim()
+    if (text) {
+      stack[stack.length - 1].push(text)
+    }
+    if (isClosing) {
+      const completedArray = stack.pop()
+      // 如果陣列只有一個子元素，則扁平化
+      if (completedArray.length === 1) {
+        const parentArray = stack[stack.length - 1]
+        parentArray[parentArray.length - 1] = completedArray[0]
+      }
+    } else {
+      const newArray = []
+      stack[stack.length - 1].push(newArray)
+      stack.push(newArray)
+    }
+    lastIndex = regex.lastIndex
+  }
+
+  return root.length === 1 ? root[0] : root // 移除最外層多餘的包裹
+}
