@@ -43,8 +43,11 @@ app.get('/trending', async (req, res) => {
       .map((item) => {
         const tableDOM = parseDivHtml(item)
         return {
-          name: tableDOM[0],
-          number: tableDOM[1][0][0],
+          // 標題
+          title: tableDOM[0],
+          // 搜尋數量
+          searchCount: tableDOM[1][0][0],
+          // 相關時間
           time: `${tableDOM[1][2][1]}(${tableDOM[1][1]})`,
         }
       })
