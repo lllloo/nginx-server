@@ -31,10 +31,6 @@ jobs:
               cd nginx-server
             fi
             
-            # 確保 Docker 映像正確構建
-            echo "構建 Docker 映像..."
-            docker-compose build
-            
             # 在正確的目錄中執行 docker-compose 命令
             echo "重啟 Docker 容器..."
             docker-compose down
