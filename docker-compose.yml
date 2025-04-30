@@ -25,6 +25,8 @@ services:
     # 暴露本地端口 3000，映射到容器內的 3000
     ports:
       - 3000:3000
+    volumes:
+      - ./puppeteer/app.js:/app/app.js
   nginx:
     image: nginx:latest
     container_name: nginx

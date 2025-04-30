@@ -18,7 +18,7 @@ COPY package*.json ./
 # 使用 npm ci 而非 npm install 提高安裝速度和一致性
 RUN npm ci
 
-# 之後再複製其他檔案，這樣修改應用程式檔案時才不會破壞 Docker 層的緩存
+# 複製所有檔案，包括 app.js (稍後可透過 volume 掛載覆蓋)
 COPY . .
 
 EXPOSE 3000
