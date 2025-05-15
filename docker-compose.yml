@@ -1,8 +1,4 @@
 services:
-  helloworld:
-    image: crccheck/hello-world
-    restart: unless-stopped
-    container_name: helloworld
   n8n:
     # 使用官方 n8n 映像
     image: docker.n8n.io/n8nio/n8n
@@ -16,7 +12,7 @@ services:
     environment:
     - WEBHOOK_URL=https://n8n.bugloop.com
     - GENERIC_TIMEZONE=Asia/Taipei
-    # 掛載卷以持久化數據
+    # 掛載卷以持久化數據 
     volumes:
       - n8n_data:/home/node/.n8n
   puppeteer:
@@ -38,10 +34,13 @@ services:
         - ./nginx/conf.d:/etc/nginx/conf.d
         - ./certbot/conf:/etc/letsencrypt
         - ./certbot/www:/var/www/certbot
+        - ./nginx/log:/var/log/nginx
     depends_on:
       - n8n
-      - helloworld
       - puppeteer
+    networks:
+      - web
+      - default
   certbot:
     image: certbot/certbot:latest
     container_name: certbot
@@ -54,3 +53,7 @@ services:
 volumes:
   n8n_data:
     name: n8n_data
+
+networks:
+  web:
+    external: true
